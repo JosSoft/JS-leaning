@@ -1,62 +1,75 @@
-/* 1) Создать HTML страницу и подключить к ней файл скрипта */
+'use strict';
 
-/* 2) В файле скрипта создать 2 переменные (money и time), которые будут получать данные от пользователя:
-    · Первая будет спрашивать "Ваш бюджет на месяц?"
-    · Вторая "Введите дату в формате YYYY-MM-DD"*/
+let money, time;
 
-var money = prompt("Ваш бюджет на месяц?"),
-    time = prompt("Введите дату в формате YYYY-MM-DD");
+function start() {
+    money = +prompt ("Ваш бюджет на месяц?", "1000000");
+    time = prompt ("Введите дату в формате YYYY-MM-DD", "2019-05-01");
 
-/* 3) Создать объект appData, который будет содержать такие данные:
-    ·      бюджет (передаем сюда переменную из п.2)
-    ·      данные времени - timeData (передаем сюда переменную из п.2)
-    ·      объект с обязательными расходами - expenses (смотри пункт 4)
-    ·      объект с необязательными расходами - optionalExpenses (оставляем пока пустым)
-    ·      массив данных с доп. доходом - income (оставляем пока пустым)
-    ·      свойство savings (выставляем его как false) */
+    while (isNaN(money) || money == "" || money == null) {
+        money = +prompt ("Ваш бюджет на месяц?", "10000"); 
+    }
+}
+start();
 
-var appData = {};
-appData.money = money;
-appData.timeData = time;
-appData.expenses = {};
-appData.optionalExpenses = {};
-appData.income = [];
-appData.savings = false;
+let appData = {
+    budget: money,
+    timeData: time,
+    expenses: {},
+    optionalExpenses: {},
+    income: [],
+    savings: true
+};
 
-/* 4) Задать пользователю по 2 раза вопросы:
-    “Введите обязательную статью расходов в этом месяце”
-    “Во сколько обойдется?”
-    Записать ответы в объект expenses в формате: 
-    expenses: {
-    “ответ на первый вопрос” : “ответ на второй вопрос”
-    } */
+function chooseExpenses() {
+    for (let i = 0; i < 2; i++) {
+        let a = prompt ("Введите обязательную статью расходов в этом месяце", 
+            "Статья №" + (i + 1)),
+            b = prompt ("Во сколько обойдется?", 1000 * (i + 1));
+    
+        if ( typeof(a)==='string' && typeof(a) != null && typeof(b) != null && a != "" && b != "" && a.length < 50) {
+            appData.expenses[a] = b;
+        } else {
+            i--;
+        }
+    };
+}
+chooseExpenses();
 
-    var e1 = prompt("Введите обязательную статью расходов в этом месяце");
-    var e2 = prompt("Во сколько обойдется?");
-    appData.expenses[e1] = e2;
-    var e3 = prompt("Введите обязательную статью расходов в этом месяце");
-    var e4 = prompt("Во сколько обойдется?");
-    appData.expenses[e3] = e4;
+function detectDayBudget() {                                            // Расчет дневного бюджета
+    appData.moneyPerDay = (appData.budget / 30).toFixed();
+    alert ("Бюджет на 1 день составляет " + appData.moneyPerDay + "руб.");
+}
+detectDayBudget();
 
-/* 5) Вывести на экран пользователя бюджет на 1 день (брать месяц за 30 дней, использовать alert)*/
-
-// Не совсем понял, что нужно сделать. Пока вариант такой:
-var budjet1 = appData.money / 30;
-alert("Бюджет на 1 день: " + budjet1);
-
-/* 6) Проверить, чтобы все работало без ошибок в консоли*/
-// Ответ: ОК.
-
-/* 7) Создать свой репозиторий на GitHub и поместить туда папку с первым заданием */
-// Ответ: Не думал, что это будет для меня таааак сложно :(
+function detectLevel(Per) {                                                // Расчет уровня достатка
+    if (Per < 100) {return "Это минимальный уровень достатка!";} 
+    else if (Per > 100 && Per < 2000) {return "Это средний уровень достатка!";} 
+    else if (Per > 2000) {return "Это высокий уровень достатка!";} 
+    else {return "Ошибочка...!";}
+}
+console.log(detectLevel(appData.moneyPerDay));
 
 
-// Вопросы к этому заданию
-//Сколько типов данных существует в JS? 
-// Ответ: 6 типов.
+function checkSavings(flag) {
+    if (flag == true) {
+        let save = +prompt("(checkSavings) Какова сумма накоплений?", "10000"),
+            percent = +prompt("(checkSavings) Под какой процент?", "13");
+            return save/100/12*percent;
+    }
+}
+appData.monthIncome = checkSavings(appData.savings);
+alert("Доход с Вашего депозита в месяц: " + appData.monthIncome);
 
-//Как вывести информацию в консоль?
+function chooseOptExpenses(count) {                             // Функция для определения необязательных расходов
+
+    for (let i = 1; i <= count; i++) {
+        let questionOptExpenses = prompt("Статья необязательных расходов?", 
+        "Статья №" + (i * 34 / 5).toFixed());
+        appData.optionalExpenses[i] = questionOptExpenses;
+        console.log("optionalExpenses[" + i + "] = " + questionOptExpenses);
+    }
+}
+chooseOptExpenses(3);
+
 console.log(appData);
-
-//Какая функция операторов || и &&? 
-//Ответ: Логические операторы, || - или, && - и.
