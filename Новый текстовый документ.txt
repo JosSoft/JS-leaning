@@ -1,0 +1,100 @@
+"use strinct";
+let div = (x, y) => {
+  if (y === 0) {
+    return null;
+  }
+  return (x / y).toFixed(2);
+};
+
+let div2 = function (x, y) {
+  if (y === 0) {
+    return null;
+  }
+  return (x / y).toFixed(2);
+}
+
+let str = some("Joss","Iven", "12","23","34","45","56",67,78,89);
+document.querySelector('#res').innerHTML = str;
+document.querySelectorAll('#strf1').innerHTML = `<div>div(23, 33) = ${div(23, 33)}</div>`;
+document.querySelector('#strf2').innerHTML = div1(23, 33);
+
+
+
+//console.log(div(23, 3));
+//console.log(div1(23, 44));
+
+
+function some(f1, f2, ...marks) {
+  let sum = 0;
+
+  for (let m of marks) {
+    sum += +m;
+  } 
+  let avg = (sum / marks.length).toFixed(2);
+  let res = `<div>${f1} ${f2} <strong>${avg}</strong></div>`;
+  return res;
+}
+
+
+// МАССИВЫ, способы перебора
+const array = ['str',5, {}];
+
+// 1. foreach
+array.forEach((val, i) => console.log(`№${i} - значение: ${val}`));
+
+array.forEach(function(item) {
+  console.log(`${item}`);
+});
+
+// пример
+const btn = document.querySelectorAll('.btn');
+
+btn.forEach(item => {
+  item.addEventListener('click', () => {
+    console.log('Вы нажали на кнопку');
+  });
+  item.style.color = "red";
+});
+
+// 2. Filter
+const names = ['Иван','Николай','Сергей','Марина','Анастасия','Ирина','Евгений'];
+const sNames = names.filter(name => {
+    return name.length < 8;
+});
+console.log(sNames);
+
+// 3. Map - перебирает как foreach, но создает новый массив как Filter
+let answers = ['iVan','JosSoft'];
+answers = answers.map(item => item.toUpperCase()); // перезыписываем переменную
+console.log(answers);
+
+// 4а. Every проверяет на цифру например
+// 4б. Хоть какой-то Элемент число
+const some = [4,'qwee','qweeew'];
+console.log(some.every(item => typeof(item) === 'number'));
+console.log(some.some(item => typeof(item) === 'number'));
+
+// 5. reduce Сворачивает весь массив по отпределенному действию и выдет результат
+let numbers = [4, 6, 7, 2, 1, 8, 9, 3];
+const res = numbers.reduce((sum, cur) => sum + cur);
+console.log(res);
+
+let fio = ['Иванеов','Иван','Иванович'];
+console.log(fio.reduce((sum, cur) => sum + ' ' + cur));
+
+// Object.entries - Штучка, j превращает объект в маccив
+const obj = {
+    ivan: 'persone',
+    cat: 'animal',
+    dob: 'animal',
+    ann: 'persone'
+}
+let newA = Object.entries(obj);
+console.log(newA);
+let newArr = Object.entries(obj).
+                filter(item => item[1] === 'persone').
+                map(item => item[0]);
+console.log(newArr);
+
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
