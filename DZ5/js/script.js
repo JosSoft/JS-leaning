@@ -26,7 +26,9 @@ column[1].removeChild(adv);
 
 //Спросить у пользователя отношение к технике 
 //apple и записать ответ в блок на странице с id "prompt"
-let q = prompt('Ваше отношение к технике Аpple?','');
-let pr = document.querySelector('#prompt');
-pr.textContent = q;
-console.log(pr);
+//let q = prompt('Ваше отношение к технике Аpple?','');
+//let pr = document.querySelector('#prompt');
+//pr.textContent = q;
+//console.log(pr);
+
+//document.body.style.backgroundImage = "url('img/apple_true.jpg')";
