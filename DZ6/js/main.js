@@ -6,7 +6,8 @@ let appData = {
     expenses: {},
     optionalExpenses: {},
     income: [],
-    savings: false
+    savings: false,
+    moneyPerDay: ''
 };
 
 let startBtn = document.getElementById("start"),
@@ -17,7 +18,7 @@ let startBtn = document.getElementById("start"),
     incomeValue = document.getElementsByClassName("income-value")[0],
     monthSavingsValue = document.getElementsByClassName("monthsavings-value")[0],
     yearSavingsValue = document.getElementsByClassName("yearsavings-value")[0],
-
+    daybudgetValue = document.querySelector('.daybudget-value'),
     expensesItem = document.getElementsByClassName('expenses-item'),
     expensesBtn = document.getElementsByTagName('button')[0],
     optionalExpensesBtn = document.getElementsByTagName('button')[1],
@@ -26,11 +27,17 @@ let startBtn = document.getElementById("start"),
     incomeItem = document.querySelector('.choose-income'),
     checkSavings = document.querySelector('#savings'),
     sumValue = document.querySelector('.choose-sum'),
-    persentValue = document.querySelector('.choose-persent'),
+    persentValue = document.querySelector('.choose-percent'),
     yearValue = document.querySelector('.year-value'),
     monthValue = document.querySelector('.month-value'),
     dayValue = document.querySelector('.day-value');
 
+function DisableBtn(bool = true) {
+    document.querySelectorAll('button').forEach(value => {
+        if (value.classList != "start") value.disabled = bool;
+    });
+}
+DisableBtn();
 
 startBtn.addEventListener('click', function () {
     time = prompt("Введите дату в формате YYYY-MM-DD", "2019-05-15");
@@ -46,6 +53,8 @@ startBtn.addEventListener('click', function () {
     yearValue.value = new Date(Date.parse(time)).getFullYear();
     monthValue.value = new Date(Date.parse(time)).getMonth() + 1;
     dayValue.value = new Date(Date.parse(time)).getDate();
+
+    DisableBtn(false);
 });
 
 expensesBtn.addEventListener('click', function () {
@@ -66,6 +75,10 @@ expensesBtn.addEventListener('click', function () {
 });
 
 optionalExpensesBtn.addEventListener('click', function () {
+
+    /*Реализовать функционал: при расчете дневного бюджета учитывать сумму обязательных трат 
+    (т. e. от бюджета на месяц отнимаем общую сумму всех обяз. трат и ее делим на 30 дней)*/
+    
     for (let i = 0; i < optionalExpensesItem.length; i++) {
         let opt = optionalExpensesItem[i].value;
         appData.optionalExpenses[i] = opt;
@@ -133,3 +146,5 @@ persentValue.addEventListener('input', function () {
         yearSavingsValue.textContent = appData.yearIncome.toFixed(1);
     }
 });
+
+console.log(appData);
