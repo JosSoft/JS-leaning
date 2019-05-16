@@ -1,58 +1,135 @@
-//Получить кнопку "Начать расчет" через id
-let start = document.querySelector('#start');
-//console.log(start);
-/*Получить все блоки в правой части программы через 
-классы (которые имеют класс название-value, начиная с 
-<div class="budget-value"></div> и заканчивая 
-<div class="yearsavings-value"></div>)*/
-let rBlok = document.body.querySelector(".result-table").children;
-let arr = [];
-for (let i = 0; i < rBlok.length; i++) {
-    if (rBlok[i].className.indexOf('value') > 0) {
-        arr.push(rBlok[i].className);
-        //console.log(rBlok[i].className);
-    }
-}
-//console.log(arr);
+let money, time;
 
-/*Получить поля(input) c обязательными расходами 
-через класс. (class=”expenses-item”)*/
-let ex = document.querySelectorAll('.expenses-item');
-for (let i=0; i<ex.length; i++) {
-    //console.log(`${ex[i].placeholder}(${ex[i].id}) = ${ex[i].value};`);
+let appData = {
+    budget: money,
+    timeData: time,
+    expenses: {},
+    optionalExpenses: {},
+    income: [],
+    savings: false
 };
 
+let startBtn = document.getElementById("start"),
+    budgetValue = document.getElementsByClassName("budget-value")[0],
+    levelValue = document.getElementsByClassName("level-value")[0],
+    expensesValue = document.getElementsByClassName("expenses-value")[0],
+    optionalExpensesValue = document.getElementsByClassName("optionalexpenses-value")[0],
+    incomeValue = document.getElementsByClassName("income-value")[0],
+    monthSavingsValue = document.getElementsByClassName("monthsavings-value")[0],
+    yearSavingsValue = document.getElementsByClassName("yearsavings-value")[0],
 
-//Получить кнопки “Утвердить” и “Рассчитать” через Tag, 
-//каждую в своей переменной. 
-let btn = document.querySelectorAll('button');
-let btn1 = btn[0];
-let btn2 = btn[2];
-let btn3 = btn[2];
-//console.log(btn1);
-//console.log(btn2);
-//console.log(btn3);
+    expensesItem = document.getElementsByClassName('expenses-item'),
+    expensesBtn = document.getElementsByTagName('button')[0],
+    optionalExpensesBtn = document.getElementsByTagName('button')[1],
+    countBtn = document.getElementsByTagName('button')[2],
+    optionalExpensesItem = document.querySelectorAll('.optionalexpenses-item'),
+    incomeItem = document.querySelector('.choose-income'),
+    checkSavings = document.querySelector('#savings'),
+    sumValue = document.querySelector('.choose-sum'),
+    persentValue = document.querySelector('.choose-persent'),
+    yearValue = document.querySelector('.year-value'),
+    monthValue = document.querySelector('.month-value'),
+    dayValue = document.querySelector('.day-value');
 
-//Получить поля для ввода необязательных расходов 
-//(optionalexpenses-item) при помощи querySelectorAll
-let opt = document.querySelectorAll('.optionalexpenses-item');
-//console.log(opt);
 
-//Получить оставшиеся поля через querySelector 
-//(статьи возможного дохода, чекбокс, сумма, процент, 
-//год, месяц, день)
-let svd = document.querySelector('input.choose-income#income');
-let chk = document.querySelector('input#savings');
-let sun = document.querySelector('input.choose-sum#sum');
-let per = document.querySelector('input.choose-percent#percent');
-let y = document.querySelector('input.year-value');
-let m = document.querySelector('input.month-value');
-let d = document.querySelector('input.day-value');
+startBtn.addEventListener('click', function () {
+    time = prompt("Введите дату в формате YYYY-MM-DD", "2019-05-15");
+    money = +prompt("Ваш бюджет на месяц?", "995684");
 
-console.log(svd);
-console.log(chk);
-console.log(sum);
-console.log(per);
-console.log(y);
-console.log(m);
-console.log(d);
+    while (isNaN(money) || money == "" || money == null) {
+        money = +prompt("Ваш бюджет на месяц?", "10000");
+    }
+
+    appData.budget = money;
+    appData.timeData = time;
+    budgetValue.textContent = money.toFixed();
+    yearValue.value = new Date(Date.parse(time)).getFullYear();
+    monthValue.value = new Date(Date.parse(time)).getMonth() + 1;
+    dayValue.value = new Date(Date.parse(time)).getDate();
+});
+
+expensesBtn.addEventListener('click', function () {
+    let sum = 0;
+
+    for (let i = 0; i < expensesItem.length; i++) {
+        let a = expensesItem[i].value,
+            b = expensesItem[++i].value;
+
+        if (typeof (a) === 'string' && typeof (a) != null && typeof (b) != null && a != "" && b != "" && a.length < 50) {
+            appData.expenses[a] = b;
+            sum += +b;
+        } else {
+            i = i - 1;
+        }
+    }
+    expensesValue.textContent = sum;
+});
+
+optionalExpensesBtn.addEventListener('click', function () {
+    for (let i = 0; i < optionalExpensesItem.length; i++) {
+        let opt = optionalExpensesItem[i].value;
+        appData.optionalExpenses[i] = opt;
+        optionalExpensesValue.textContent += appData.optionalExpenses[i] + ' ';
+    }
+});
+
+countBtn.addEventListener('click', function () {
+    if (appData.budget != undefined) {
+
+        appData.moneyPerDay = (appData.budget / 30).toFixed();
+        daybudgetValue.textContent = appData.moneyPerDay;
+
+        if (appData.moneyPerDay < 100) {
+            levelValue.textContent = "Это минимальный уровень достатка!";
+        } else if (appData.moneyPerDay > 100 && appData.moneyPerDay < 2000) {
+            levelValue.textContent = "Это средний уровень достатка!";
+        } else if (appData.moneyPerDay > 2000) {
+            levelValue.textContent = "Это высокий уровень достатка!";
+        } else {
+            return "Ошибочка...!";
+        }
+
+    } else {
+        daybudgetValue.textContent = 'Произошла ошибка.';
+    }
+});
+
+incomeItem.addEventListener('input', function () {
+    let items = incomeItem.value;
+    appData.income = items.split(',');
+    incomeValue.textContent = appData.income;
+});
+
+checkSavings.addEventListener('click', function () {
+    if (appData.savings == true) {
+        appData.savings = false;
+    } else {
+        appData.savings = true;
+    }
+});
+
+sumValue.addEventListener('input', function () {
+    if (appData.savings == true) {
+        let sum = +sumValue.value;
+        let per = +persentValue.value;
+
+        appData.monthIncome = sum / 100 / 12 * per;
+        appData.yearIncome = sum / 100 * per;
+
+        monthSavingsValue.textContent = appData.monthIncome.toFixed(1);
+        yearSavingsValue.textContent = appData.yearIncome.toFixed(1);
+    }
+});
+
+persentValue.addEventListener('input', function () {
+    if (appData.savings == true) {
+        let sum = +sumValue.value;
+        let per = +persentValue.value;
+
+        appData.monthIncome = sum / 100 / 12 * per;
+        appData.yearIncome = sum / 100 * per;
+
+        monthSavingsValue.textContent = appData.monthIncome.toFixed(1);
+        yearSavingsValue.textContent = appData.yearIncome.toFixed(1);
+    }
+});
